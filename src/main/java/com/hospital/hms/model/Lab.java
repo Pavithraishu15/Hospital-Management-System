@@ -72,4 +72,11 @@ public class Lab {
     public void setAmountStatus(String amountStatus) {
         this.amountStatus = amountStatus;
     }
+    public void updateFileStatus() {
+        if (this.fileName == null || this.fileName.isEmpty()) {
+            this.fileStatus = "not uploaded";
+        } else {
+            this.fileStatus = "uploaded";
+        }
+    }
 }
