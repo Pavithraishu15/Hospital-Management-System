@@ -3,14 +3,22 @@ package com.hospital.hms.controller;
 import com.hospital.hms.model.Appointment;
 import com.hospital.hms.model.Employee;
 import com.hospital.hms.model.User;
+import com.hospital.hms.repository.UserRepository;
 import com.hospital.hms.service.AppointmentService;
 import com.hospital.hms.service.UserService;
 import com.hospital.hms.service.Userser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +33,47 @@ public class AuthController {
     Userser userser;
     @Autowired
     AppointmentService appointmentService;
+@Value("${file.upload-dir}")
+private String uploadDir;
+@Autowired
+    UserRepository userRepository;
+    @PostMapping("/{id}/uploadReport")
+    public ResponseEntity<String> uploadReport(@PathVariable Long id, @RequestParam("report") MultipartFile file) {
+        try {
+            // Validate the file
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("No file selected");
+            }
+
+            // Create directory if it doesn't exist
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // Get the file name and create a unique file path
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            Path path = Paths.get(uploadDir, fileName);
+
+            // Save the file locally
+            file.transferTo(path.toFile());
+
+            // Update the user's report column with the file path
+            User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+            user.setReport(path.toString());  // Save the file path to the report column
+            userRepository.save(user);
+
+            return ResponseEntity.ok("File uploaded successfully!");
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error uploading file: " + e.getMessage());
+        }
+    }
+
+
+
+
+
 
     @PostMapping("/doctor")
     public Appointment createAppointment(@RequestBody Appointment appointment) {
@@ -114,6 +163,7 @@ public void deleteUser(@PathVariable(value = "id")Long id){
 
 
     }
+
 
 
     }
