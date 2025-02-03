@@ -19,7 +19,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/register","/lab","/registerDoctor","/{id}/file-status","/api/upload","/appointments","/appointments/{id}","/register/**","/register/{id}","/loginDoctor","/doctor","/doctor/**","/patient/{id}","patient/**","/login","/employee","/employee/{emp_id}").permitAll()
+                        .requestMatchers("/register","/{id}/uploadReport","/loginLabIncharge","/lab","/registerDoctor","/{id}/file-status","/lab/{id}/upload","/appointments","/appointments/{id}","/register/**","/register/{id}","/loginDoctor","/doctor","/doctor/**","/patient/{id}","patient/**","/login","/employee","/employee/{emp_id}").permitAll()
                         .anyRequest().authenticated()
                 );
                 // Only disable if you are sure you don't need it
