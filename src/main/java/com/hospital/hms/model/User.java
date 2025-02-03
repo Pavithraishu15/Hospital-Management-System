@@ -26,7 +26,7 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 
     private Date date;
-
+private String report;
     public User(Long id, int age, String bloodGroup, String address, String gender, String contactNo, String name, String username, String password, String problem, Date date) {
         this.id = id;
         this.age = age;
@@ -39,9 +39,18 @@ public class User {
         this.password = password;
         this.problem = problem;
         this.date = date;
+        this.report=report;
     }
 
     public User() {
+    }
+
+    public String getReport() {
+        return report;
+    }
+
+    public void setReport(String report) {
+        this.report = report;
     }
 
     public Date getDate() {
